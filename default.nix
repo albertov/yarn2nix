@@ -113,7 +113,7 @@ in rec {
 
         # Do not look up in the registry, but in the offline cache.
         # TODO: Ask upstream to fix this mess.
-        sed -i -E 's|^(\s*resolved\s*")https?://.*/|\1|' yarn.lock
+        sed -i -E '/resolved /{s|https://registry.yarnpkg.com/||;s|[@/:-]|_|g}' yarn.lock
 
         ${workspaceDependencyLinks}
         yarn install ${lib.escapeShellArgs yarnFlags}
@@ -287,7 +287,7 @@ in rec {
       '';
 
       doDist = true;
-      distPhase = ''
+      distPhase = attrs.distPhase or ''
         # pack command ignores cwd option
         rm -f .yarnrc
         cd $out/libexec/${pname}/deps/${pname}
